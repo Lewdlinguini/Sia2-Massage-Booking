@@ -64,8 +64,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link text-white" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="#">About</a></li>
+                
+                <li class="nav-item">
+    <a class="nav-link text-white" href="{{ route('home') }}">Home</a>
+</li>
+
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ route('about') }}">About</a></li>
+
                     <li class="nav-item"><a class="nav-link text-white" href="#">Services</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="#">Contact</a></li>
                 </ul>
