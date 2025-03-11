@@ -1,2 +1,2 @@
 # Sia2-Massage-Booking
-Bingil, Albao, Subii
+Bingil, Albao, Subibi
