@@ -1,4 +1,3 @@
-<!-- resources/views/layouts/app.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,15 +66,13 @@
                 
                 <li class="nav-item">
     <a class="nav-link text-white" href="{{ route('home') }}">Home</a>
-</li>
 
+                    </li>
                     <li class="nav-item"><a class="nav-link text-white" href="{{ route('about') }}">About</a></li>
-
                     <li class="nav-item"><a class="nav-link text-white" href="#">Services</a></li>
                     <li class="nav-item">
-    <a class="nav-link text-white" href="{{ route('contact') }}">Contact Us</a>
-</li>
-
+                    <a class="nav-link text-white" href="{{ route('contact') }}">Contact Us</a>
+                    </li>
                 </ul>
             </div>
         </div>

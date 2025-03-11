@@ -9,18 +9,18 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h4>JanJan's Essential Oil</h4>
-                    <p>Your go-to place for premium essential oils and spa services.</p>
+                    <p>Your go-to place for premium essential oiled up massages.</p>
 
                     <hr>
 
                     <h5><i class="bi bi-geo-alt-fill"></i> Our Address</h5>
-                    <p>123 Wellness Street, Cityville, State, 45678</p>
+                    <p>Ramon Magsaysay Memorial Colleges</p>
 
                     <h5><i class="bi bi-telephone-fill"></i> Phone</h5>
                     <p>+1 234 567 8900</p>
 
                     <h5><i class="bi bi-envelope-fill"></i> Email</h5>
-                    <p>contact@janjanspa.com</p>
+                    <p>contact@</p>
 
                     <hr>
 
