@@ -9,7 +9,16 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form action="{{ route('profile.update') }}" method="POST">
+        <!-- Show current profile picture -->
+        <div class="text-center mb-3">
+            @if(auth()->user()->profile_picture)
+                <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" class="rounded-circle" width="100" height="100" alt="Profile Picture">
+            @else
+                <img src="{{ asset('default-avatar.png') }}" class="rounded-circle" width="100" height="100" alt="Default Avatar">
+            @endif
+        </div>
+
+        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -35,9 +44,14 @@
                     class="form-control"
                     id="email"
                     name="email"
-                    value="{{ old('email', auth()->user()->email) }}"
+                    value="{{ auth()->user()->email }}"
                     readonly
                 >
+            </div>
+
+            <div class="mb-3">
+                <label for="profile_picture" class="form-label" style="color: #4a3b2b;">Upload New Profile Picture</label>
+                <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
             </div>
 
             <button type="submit" class="btn" style="background: rgba(212, 163, 115, 0.9); color: white; width: 100%;">Save Changes</button>

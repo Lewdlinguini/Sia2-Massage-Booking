@@ -52,16 +52,16 @@
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            display: block !important; /* Keep display block for animation */
-            pointer-events: none;       /* Disable clicks when hidden */
-            visibility: hidden;         /* Hide visually */
+            display: block !important;
+            pointer-events: none;
+            visibility: hidden;
         }
 
         .dropdown-menu.show {
             opacity: 1;
             transform: translateY(0);
-            pointer-events: auto;       /* Enable clicks */
-            visibility: visible;        /* Show visually */
+            pointer-events: auto;
+            visibility: visible;
         }
     </style>
 </head>
@@ -94,7 +94,12 @@
             @auth
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        @if(Auth::user()->profile_picture)
+                            <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" class="rounded-circle me-2" width="30" height="30" alt="Profile Picture">
+                        @else
+                            <img src="{{ asset('default-avatar.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Default Avatar">
+                        @endif
                         {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -109,6 +114,7 @@
                 </li>
             </ul>
             @endauth
+
             @guest
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link text-white" href="{{ route('login') }}">Login</a></li>
