@@ -100,10 +100,11 @@
                         @else
                             <img src="{{ asset('default-avatar.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Default Avatar">
                         @endif
-                        {{ Auth::user()->name }}
+                        {{ Auth::user()->first_name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('activity.log') }}">Activity Log</a></li>
                         <li>
                             <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0 m-0">
                                 @csrf

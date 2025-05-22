@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,4 +59,6 @@ Route::middleware('auth')->group(function () {
     })->name('home');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity.log')->middleware('auth');
 });
