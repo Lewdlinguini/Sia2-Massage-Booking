@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,37 +14,37 @@ class ProfileController extends Controller
     }
 
     public function update(Request $request)
-    {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'age' => 'nullable|integer|min:0',
-            'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
-            'cellphone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'date_of_birth' => 'required|date|before:today',
+        'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+        'cellphone' => 'nullable|string|max:20',
+        'address' => 'nullable|string|max:255',
+        'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $user = auth()->user();
+    $user = auth()->user();
 
-        // Handle profile picture upload
-        if ($request->hasFile('profile_picture')) {
-            $image = $request->file('profile_picture');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+    if ($request->hasFile('profile_picture')) {
+        $image = $request->file('profile_picture');
+        $imageName = time() . '_' . $image->getClientOriginalName();
 
-            // Save image to 'public' disk (i.e., storage/app/public/profile_pictures)
-            Storage::disk('public')->putFileAs('profile_pictures', $image, $imageName);
+        Storage::disk('public')->putFileAs('profile_pictures', $image, $imageName);
 
-            // Delete old profile picture if exists
-            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
-                Storage::disk('public')->delete($user->profile_picture);
-            }
-
-            $validated['profile_picture'] = 'profile_pictures/' . $imageName;
+        if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+            Storage::disk('public')->delete($user->profile_picture);
         }
 
-        $user->update($validated);
-
-        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+        $validated['profile_picture'] = 'profile_pictures/' . $imageName;
     }
+
+    // Calculate age from date_of_birth
+    $validated['age'] = Carbon::parse($validated['date_of_birth'])->age;
+
+    $user->update($validated);
+
+    return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+}
 }

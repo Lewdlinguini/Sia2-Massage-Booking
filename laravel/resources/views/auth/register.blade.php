@@ -18,10 +18,20 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input type="text" name="name" class="form-control" required value="{{ old('name') }}">
-            </div>
+           <div class="mb-3">
+           <label class="form-label">First Name</label>
+           <input type="text" name="first_name" class="form-control" required value="{{ old('first_name') }}">
+           </div>
+
+           <div class="mb-3">
+           <label class="form-label">Last Name</label>
+           <input type="text" name="last_name" class="form-control" required value="{{ old('last_name') }}">
+           </div> 
+
+           <div class="mb-3">
+           <label class="form-label">Date of Birth</label>
+           <input type="date" name="date_of_birth" class="form-control" required value="{{ old('date_of_birth') }}">
+           </div>
 
             <div class="mb-3">
                 <label class="form-label">Email</label>

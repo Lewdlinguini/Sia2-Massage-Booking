@@ -55,10 +55,11 @@ Route::middleware(['auth'])->group(function () {
 // ✅ Authenticated-only routes (only logged-in users can access these)
 Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
-        return view('home'); // 🔁 Make sure resources/views/home.blade.php exists
+        return view('home'); 
     })->name('home');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity.log')->middleware('auth');
+    Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index'])->name('services.index');
 });
