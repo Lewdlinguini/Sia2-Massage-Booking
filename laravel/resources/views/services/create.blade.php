@@ -32,7 +32,9 @@
             <input type="file" class="form-control" name="image" id="image">
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Service</button>
+       <button type="submit" class="btn" style="background: rgba(212, 163, 115, 0.9); color: white; padding: 0.5rem 1.5rem; border-radius: 5px;">
+       Add Service
+       </button>
     </form>
 </div>
 @endsection
