@@ -147,7 +147,6 @@
             <ul class="dropdown-menu dropdown-menu-light w-100 shadow-sm border-0" aria-labelledby="servicesDropdown">
                 <li><a class="dropdown-item" href="{{ route('services.index') }}">View Services</a></li>
                 <li><a class="dropdown-item" href="{{ route('services.create') }}">Add Services</a></li>
-                <li><a class="dropdown-item" href="#">Facial Massage</a></li>
             </ul>
         </div>
 
