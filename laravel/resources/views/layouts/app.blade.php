@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Beauty & Spa</title>
+    <title>JJEO Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>    
-    
     .sidebar .dropdown-toggle.sidebar-link {
         display: block;
         padding: 12px 20px;
@@ -146,8 +145,8 @@
                 <i class="bi bi-flower1 me-2"></i>Services
             </a>
             <ul class="dropdown-menu dropdown-menu-light w-100 shadow-sm border-0" aria-labelledby="servicesDropdown">
+                <li><a class="dropdown-item" href="{{ route('services.index') }}">View Services</a></li>
                 <li><a class="dropdown-item" href="{{ route('services.create') }}">Add Services</a></li>
-                <li><a class="dropdown-item" href="#">Body Massage</a></li>
                 <li><a class="dropdown-item" href="#">Facial Massage</a></li>
             </ul>
         </div>
