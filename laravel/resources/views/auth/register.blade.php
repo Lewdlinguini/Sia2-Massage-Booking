@@ -48,6 +48,14 @@
                 <input type="password" name="password_confirmation" class="form-control" required>
             </div>
 
+            <div class="mb-3">
+            <label class="form-label">Registering As</label>
+            <select name="role" class="form-select" required>
+            <option value="User" {{ old('role') == 'User' ? 'selected' : '' }}>User</option>
+            <option value="Masseuse" {{ old('role') == 'Masseuse' ? 'selected' : '' }}>Masseuse</option>
+            </select>
+            </div>
+
             <div class="d-grid mb-3">
                 <button type="submit" class="btn" style="background: rgba(212, 163, 115, 0.9); color: white;">Register</button>
             </div>

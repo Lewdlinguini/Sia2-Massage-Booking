@@ -22,6 +22,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'date_of_birth' => ['required', 'date', 'before:today'],
+            'role' => ['required', 'in:User,Masseuse'],
         ]);
 
         $dateOfBirth = Carbon::parse($request->date_of_birth);
@@ -33,7 +34,8 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'age' => $age,
-            'date_of_birth' => $request->date_of_birth,  // Make sure you added this column to users table
+            'date_of_birth' => $request->date_of_birth, 
+            'role' => $request->role,
         ]);
 
         return redirect()->route('login')->with('success', 'Registration successful! Please login.');

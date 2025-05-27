@@ -63,7 +63,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity.log')->middleware('auth');
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+    Route::middleware('check.role:Admin,Masseuse')->group(function () {
     Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+    });
     Route::resource('services', ServiceController::class);
 });

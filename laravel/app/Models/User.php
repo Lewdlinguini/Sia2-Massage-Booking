@@ -19,14 +19,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'date_of_birth', 
-        'email',
-        'password',
-        'profile_picture',
-        'cellphone',
-        'address',
+    'first_name',
+    'last_name',
+    'date_of_birth', 
+    'email',
+    'password',
+    'profile_picture',
+    'cellphone',
+    'address',
+    'role', // <-- Add this
     ];
 
     /**
@@ -52,4 +53,20 @@ class User extends Authenticatable
         'date_of_birth' => 'date', // <- Add this line
     ];
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'Admin';
+    }
+
+    public function isMasseuse(): bool
+    {
+        return $this->role === 'Masseuse';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'User';
+    }
+    
 }
