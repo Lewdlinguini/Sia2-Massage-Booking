@@ -21,30 +21,30 @@
             font-size: 1.5rem;
         }
         .footer {
-            background: rgba(212, 163, 115, 0.9); /* Same as navbar */
-            color: white; /* Adjust text color for contrast */
-            padding: 15px 0; /* Add some spacing */
-            text-align: center; /* Center the content */
+            background: rgba(212, 163, 115, 0.9);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
             transition: background 0.3s ease-in-out;
         }
         .footer a {
-            color: white; /* Ensures icons stay visible */
+            color: white;
             margin: 0 10px;
             font-size: 20px;
         }
         .footer a:hover {
-            color: #f8f8f8; /* Slightly lighter shade on hover */
+            color: #f8f8f8;
         }
         .custom-btn {
-            background: #6c757d; /* Same color as .text-muted */
-            color: white; /* White text */
-            font-size: 14px; /* Smaller button text */
-            padding: 6px 12px; /* Smaller padding */
-            border: none; /* Removes border */
+            background: #6c757d;
+            color: white;
+            font-size: 14px;
+            padding: 6px 12px;
+            border: none;
             transition: background 0.3s ease-in-out;
         }
         .custom-btn:hover {
-            background: #5a6268; /* Slightly darker shade on hover */
+            background: #5a6268;
         }
     </style>
 </head>
@@ -53,23 +53,6 @@
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
         <a class="navbar-brand text-white" href="#">JanJan's Essential Oil</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                @auth
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{{ route('home') }}">Home</a>
-                </li>
-                @endauth
-                <li class="nav-item"><a class="nav-link text-white" href="{{ route('about') }}">About</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Services</a></li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{{ route('contact') }}">Contact Us</a>
-                </li>
-            </ul>
-        </div>
     </div>
 </nav>
 

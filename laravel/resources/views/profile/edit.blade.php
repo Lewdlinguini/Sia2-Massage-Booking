@@ -142,7 +142,7 @@
             }, 3000); // 3 seconds
         }
     });
-
+ 
     document.addEventListener('DOMContentLoaded', function () {
     const filePickerIcon = document.getElementById('file-picker-icon');
     const profilePictureInput = document.getElementById('profile_picture');
