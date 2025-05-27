@@ -5,16 +5,32 @@
     <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;">
         <h3 class="text-center mb-4" style="color: rgba(212, 163, 115, 0.9);">Edit Profile</h3>
 
-        @if(session('success'))
-        <div id="success-alert" class="alert alert-success">
-        {{ session('success') }}
+        <!-- Success Modal -->
+@if(session('success'))
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: rgba(212, 163, 115, 0.9); color: white;">
+                <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ session('success') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
-        @endif
+    </div>
+</div>
+@endif
+
 
         <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" id="profile-form">
             @csrf
             @method('PUT')
 
+            <!-- Profile Picture Upload -->
             <div class="text-center mb-3 position-relative" style="width: 100px; margin-left: auto; margin-right: auto;">
                 @if(auth()->user()->profile_picture)
                     <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
@@ -30,20 +46,7 @@
                          style="width: 100px; height: 100px; object-fit: cover;">
                 @endif
 
-                <div id="file-picker-icon" style="
-                    position: absolute;
-                    bottom: 0;
-                    right: 0;
-                    background: rgba(0,0,0,0.6);
-                    border-radius: 50%;
-                    width: 28px;
-                    height: 28px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 16px;
-                    cursor: pointer;">
+                <div id="file-picker-icon" style="position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.6); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" 
                          width="16" height="16" fill="currentColor" 
                          class="bi bi-image" viewBox="0 0 16 16">
@@ -55,6 +58,7 @@
                 <input type="file" class="d-none" id="profile_picture" name="profile_picture" accept="image/*">
             </div>
 
+            <!-- Name -->
             <div class="mb-3">
                 <label for="first_name" class="form-label" style="color: #4a3b2b;">First Name</label>
                 <input type="text" class="form-control @error('first_name') is-invalid @enderror"
@@ -75,22 +79,24 @@
                 @enderror
             </div>
 
+            <!-- Date of Birth -->
             <div class="mb-3">
-    <label for="date_of_birth" class="form-label" style="color: #4a3b2b;">Date of Birth</label>
-    <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror"
-        id="date_of_birth" name="date_of_birth"
-        value="{{ old('date_of_birth', auth()->user()->date_of_birth ? auth()->user()->date_of_birth->format('Y-m-d') : '') }}">
-    @error('date_of_birth')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                <label for="date_of_birth" class="form-label" style="color: #4a3b2b;">Date of Birth</label>
+                <input type="date" class="form-control @error('date_of_birth') is-invalid @enderror"
+                    id="date_of_birth" name="date_of_birth"
+                    value="{{ old('date_of_birth', auth()->user()->date_of_birth ? auth()->user()->date_of_birth->format('Y-m-d') : '') }}">
+                @error('date_of_birth')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
+            <!-- Cellphone -->
             <div class="mb-3">
                 <label class="form-label" style="color: #4a3b2b;">Cellphone Number</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border" style="font-weight: bold;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Flag_of_the_Philippines.svg/24px-Flag_of_the_Philippines.svg.png" alt="PH Flag" style="width: 20px; height: 14px; margin-right: 6px;">
-                    +63
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Flag_of_the_Philippines.svg/24px-Flag_of_the_Philippines.svg.png" alt="PH Flag" style="width: 20px; height: 14px; margin-right: 6px;">
+                        +63
                     </span>
                     <input type="hidden" name="country_code" value="+63">
                     <input type="tel" inputmode="numeric" maxlength="13"
@@ -105,6 +111,7 @@
                 @enderror
             </div>
 
+            <!-- Address -->
             <div class="mb-3">
                 <label for="address" class="form-label" style="color: #4a3b2b;">House Address</label>
                 <input type="text" class="form-control @error('address') is-invalid @enderror"
@@ -115,6 +122,7 @@
                 @enderror
             </div>
 
+            <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label" style="color: #4a3b2b;">Email</label>
                 <input type="email" class="form-control" id="email" name="email"
@@ -129,21 +137,14 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Trigger Bootstrap modal if success exists
+    @if(session('success'))
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    @endif
 
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        const alertBox = document.getElementById('success-alert');
-        if (alertBox) {
-            setTimeout(() => {
-                alertBox.classList.add('fade');
-                alertBox.style.transition = 'opacity 0.5s ease-out';
-                alertBox.style.opacity = 0;
-                setTimeout(() => alertBox.remove(), 500); // Fully remove after fade
-            }, 3000); // 3 seconds
-        }
-    });
- 
-    document.addEventListener('DOMContentLoaded', function () {
+    // Profile picture preview
     const filePickerIcon = document.getElementById('file-picker-icon');
     const profilePictureInput = document.getElementById('profile_picture');
     const profilePictureDisplay = document.getElementById('profile-picture-display');
@@ -163,12 +164,10 @@
         }
     });
 
+    // Format cellphone input
     const cellphoneInput = document.getElementById('cellphone');
     cellphoneInput.addEventListener('input', () => {
-        // Only digits, max 10 digits for the number after +63
         let digits = cellphoneInput.value.replace(/\D/g, '').slice(0, 10);
-
-        // Format: XXX XXX XXXX
         if (digits.length > 6) {
             cellphoneInput.value = digits.replace(/(\d{3})(\d{3})(\d{1,4})/, '$1 $2 $3');
         } else if (digits.length > 3) {

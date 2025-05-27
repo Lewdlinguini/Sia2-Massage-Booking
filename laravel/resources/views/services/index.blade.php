@@ -5,6 +5,26 @@
     <h2 class="fw-bold text-center">Available Services</h2>
     <p class="text-muted text-center">Select a service and schedule your appointment.</p>
 
+    {{-- Success Message Modal --}}
+    @if(session('success'))
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: rgba(212, 163, 115, 0.9); color: white;">
+                    <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ session('success') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="row mt-4">
         @forelse ($services as $service)
         <div class="col-md-4">
@@ -35,20 +55,39 @@
                         Book This Service
                     </a>
 
-                    {{-- Delete Button for Owner --}}
                     @if(auth()->check() && auth()->id() === $service->user_id)
-                    <form action="{{ route('services.destroy', $service->id) }}" method="POST" class="mt-2">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this service?')">
-                            Delete
-                        </button>
-                    </form>
+                    {{-- Delete Button Trigger --}}
+                    <button type="button" class="btn btn-danger w-100 mt-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $service->id }}">
+                        Delete
+                    </button>
 
-                    {{-- Edit Button for Owner --}}
+                    {{-- Edit Button --}}
                     <a href="{{ route('services.edit', $service->id) }}" class="btn btn-secondary w-100 mt-2">
                         Edit
                     </a>
+
+                    {{-- Delete Modal --}}
+                    <div class="modal fade" id="deleteModal{{ $service->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $service->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                    <div class="modal-header" style="background: rgba(212, 163, 115, 0.9); color: white;">
+                    <h5 class="modal-title" id="deleteModalLabel{{ $service->id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    Are you sure you want to delete <strong>{{ $service->name }}</strong>?
+                    </div>
+                    <div class="modal-footer">
+                    <form action="{{ route('services.destroy', $service->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -58,4 +97,14 @@
         @endforelse
     </div>
 </div>
+
+{{-- Show modal via JavaScript if success message is set --}}
+@if(session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    });
+</script>
+@endif
 @endsection
