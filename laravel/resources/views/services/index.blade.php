@@ -44,6 +44,11 @@
                             Delete
                         </button>
                     </form>
+
+                    {{-- Edit Button for Owner --}}
+                    <a href="{{ route('services.edit', $service->id) }}" class="btn btn-secondary w-100 mt-2">
+                        Edit
+                    </a>
                     @endif
                 </div>
             </div>

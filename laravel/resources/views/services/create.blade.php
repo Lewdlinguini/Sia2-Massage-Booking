@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Add a New Service</h2>
+    <h2>{{ isset($service) ? 'Edit Service' : 'Add a New Service' }}</h2>
     
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -14,19 +14,40 @@
         </div>
     @endif
 
-    <form action="{{ route('services.store') }}" method="POST" enctype="multipart/form-data">
+    <form 
+        action="{{ isset($service) ? route('services.update', $service->id) : route('services.store') }}" 
+        method="POST" 
+        enctype="multipart/form-data"
+    >
         @csrf
+        @if(isset($service))
+            @method('PUT')
+        @endif
 
         {{-- Service Name --}}
         <div class="mb-3">
             <label for="name" class="form-label">Service Name</label>
-            <input type="text" class="form-control" name="name" id="name" placeholder="e.g., Hot Stone Massage" required>
+            <input 
+                type="text" 
+                class="form-control" 
+                name="name" 
+                id="name" 
+                placeholder="e.g., Hot Stone Massage" 
+                value="{{ old('name', $service->name ?? '') }}" 
+                required
+            >
         </div>
 
         {{-- Service Description --}}
         <div class="mb-3">
             <label for="description" class="form-label">Service Description</label>
-            <textarea class="form-control" name="description" id="description" rows="3" placeholder="Describe the service..."></textarea>
+            <textarea 
+                class="form-control" 
+                name="description" 
+                id="description" 
+                rows="3" 
+                placeholder="Describe the service..."
+            >{{ old('description', $service->description ?? '') }}</textarea>
         </div>
 
         {{-- Profile Info (Static Display) --}}
@@ -45,8 +66,12 @@
         </div>
 
         {{-- Submit --}}
-        <button type="submit" class="btn" style="background: rgba(212, 163, 115, 0.9); color: white; padding: 0.5rem 1.5rem; border-radius: 5px;">
-            Add Service
+        <button 
+            type="submit" 
+            class="btn" 
+            style="background: rgba(212, 163, 115, 0.9); color: white; padding: 0.5rem 1.5rem; border-radius: 5px;"
+        >
+            {{ isset($service) ? 'Update Service' : 'Add Service' }}
         </button>
     </form>
 </div>

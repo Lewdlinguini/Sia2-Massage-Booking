@@ -68,4 +68,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     });
     Route::resource('services', ServiceController::class);
+    Route::resource('services', ServiceController::class)->except(['show']);
 });

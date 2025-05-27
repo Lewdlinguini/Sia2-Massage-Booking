@@ -56,4 +56,38 @@ class ServiceController extends Controller
     return redirect()->route('services.index')->with('success', 'Service deleted successfully.');
     }
 
+    public function edit(Service $service)
+{
+    if (auth()->id() !== $service->user_id) {
+        abort(403);
+    }
+
+    return view('services.create', compact('service'));
+}
+
+public function update(Request $request, Service $service)
+{
+    if (auth()->id() !== $service->user_id) {
+        abort(403);
+    }
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|max:2048',
+    ]);
+
+    $data = $request->only('name', 'description');
+
+    if ($request->hasFile('image')) {
+        if ($service->image && \Storage::disk('public')->exists($service->image)) {
+            \Storage::disk('public')->delete($service->image);
+        }
+        $data['image'] = $request->file('image')->store('services', 'public');
+    }
+
+    $service->update($data);
+
+    return redirect()->route('services.index')->with('success', 'Service updated successfully!');
+    }
 }
