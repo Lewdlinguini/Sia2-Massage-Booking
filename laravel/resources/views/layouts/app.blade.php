@@ -6,6 +6,8 @@
     <title>JJEO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    @stack('styles')
 
     <style>    
     .sidebar .dropdown-toggle.sidebar-link {
@@ -146,6 +148,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-light w-100 shadow-sm border-0" aria-labelledby="servicesDropdown">
             <li><a class="dropdown-item" href="{{ route('services.index') }}">View Services</a></li>
+            <li><a class="dropdown-item" href="{{ route('bookings.my') }}">View Appointments</a></li>
             @if(Auth::check() && (Auth::user()->role === 'Admin' || Auth::user()->role === 'Masseuse'))
             <li><a class="dropdown-item" href="{{ route('services.create') }}">Add Services</a></li>
             @endif
@@ -173,5 +176,6 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@stack('scripts')
 </body>
 </html>

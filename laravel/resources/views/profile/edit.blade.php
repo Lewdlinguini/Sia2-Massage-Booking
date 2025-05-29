@@ -1,46 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #f8f9fa;">
+    <div class="shadow-sm rounded-4 p-4 bg-white w-100" style="max-width: 480px;">
         <h3 class="text-center mb-4" style="color: rgba(212, 163, 115, 0.9);">Edit Profile</h3>
 
         <!-- Success Modal -->
 @if(session('success'))
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background: rgba(212, 163, 115, 0.9); color: white;">
-                <h5 class="modal-title" id="successModalLabel">Success!</h5>
+        <div class="modal-content rounded-4 shadow-sm">
+            <div class="modal-header bg-success text-white rounded-top">
+                <h5 class="modal-title" id="successModalLabel">
+                    <i class="bi bi-check-circle-fill me-2"></i>Success
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body fs-6 px-4 py-3">
                 {{ session('success') }}
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-success px-4 fw-semibold" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 @endif
-
-
         <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" id="profile-form">
             @csrf
             @method('PUT')
 
             <!-- Profile Picture Upload -->
-            <div class="text-center mb-3 position-relative" style="width: 100px; margin-left: auto; margin-right: auto;">
+            <div class="text-center mb-4 position-relative" style="width: 100px; margin: 0 auto;">
                 @if(auth()->user()->profile_picture)
                     <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
-                         class="rounded-circle img-fluid" 
+                         class="rounded-circle img-fluid profile-border" 
                          alt="Profile Picture" 
                          id="profile-picture-display" 
                          style="width: 100px; height: 100px; object-fit: cover;">
                 @else
                     <img src="{{ asset('default-avatar.png') }}" 
-                         class="rounded-circle img-fluid" 
+                         class="rounded-circle img-fluid profile-border" 
                          alt="Default Avatar" 
                          id="profile-picture-display" 
                          style="width: 100px; height: 100px; object-fit: cover;">
@@ -58,7 +58,7 @@
                 <input type="file" class="d-none" id="profile_picture" name="profile_picture" accept="image/*">
             </div>
 
-            <!-- Name -->
+            <!-- First Name -->
             <div class="mb-3">
                 <label for="first_name" class="form-label" style="color: #4a3b2b;">First Name</label>
                 <input type="text" class="form-control @error('first_name') is-invalid @enderror"
@@ -69,6 +69,7 @@
                 @enderror
             </div>
 
+            <!-- Last Name -->
             <div class="mb-3">
                 <label for="last_name" class="form-label" style="color: #4a3b2b;">Last Name</label>
                 <input type="text" class="form-control @error('last_name') is-invalid @enderror"
@@ -122,29 +123,38 @@
                 @enderror
             </div>
 
-            <!-- Email -->
+            <!-- Email (Read-only) -->
             <div class="mb-3">
                 <label for="email" class="form-label" style="color: #4a3b2b;">Email</label>
                 <input type="email" class="form-control" id="email" name="email"
                     value="{{ auth()->user()->email }}" readonly>
             </div>
 
-            <button type="submit" class="btn" style="background: rgba(212, 163, 115, 0.9); color: white; width: 100%;">
+            <button type="submit" 
+                    class="btn w-100 fw-semibold py-1" 
+                    style="background: rgba(212, 163, 115, 0.9); color: white; font-size: 0.9rem;">
                 Save Changes
             </button>
         </form>
     </div>
 </div>
 
+<style>
+    .profile-border {
+        border: 4px solid rgba(212, 163, 115, 0.9);
+        box-shadow: 0 0 10px rgba(212, 163, 115, 0.6);
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Trigger Bootstrap modal if success exists
+    // Show success modal if it exists
     @if(session('success'))
         var successModal = new bootstrap.Modal(document.getElementById('successModal'));
         successModal.show();
     @endif
 
-    // Profile picture preview
+    // Handle profile picture preview
     const filePickerIcon = document.getElementById('file-picker-icon');
     const profilePictureInput = document.getElementById('profile_picture');
     const profilePictureDisplay = document.getElementById('profile-picture-display');
@@ -164,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Format cellphone input
+    // Format cellphone number
     const cellphoneInput = document.getElementById('cellphone');
     cellphoneInput.addEventListener('input', () => {
         let digits = cellphoneInput.value.replace(/\D/g, '').slice(0, 10);

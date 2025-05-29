@@ -1,8 +1,7 @@
 <?php
 
-
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -10,6 +9,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,23 +17,15 @@ use App\Http\Controllers\ServiceController;
 |--------------------------------------------------------------------------
 */
 
-// ✅ Redirect root URL directly to the login URL (not using named route)
-Route::get('/', function () {
-    return redirect('/login');
-});
+// ✅ Redirect root URL directly to the login URL
+Route::get('/', fn () => redirect('/login'));
 
 // ✅ Public static pages
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
-
+Route::get('/about', fn () => view('about'))->name('about');
+Route::get('/contact', fn () => view('contact'))->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-// ✅ Guest-only routes (visible only to non-logged-in users)
+// ✅ Guest-only routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
@@ -48,25 +40,37 @@ Route::middleware('guest')->group(function () {
     Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-});
-
-// ✅ Authenticated-only routes (only logged-in users can access these)
+// ✅ Authenticated-only routes
 Route::middleware('auth')->group(function () {
-    Route::get('/home', function () {
-        return view('home'); 
-    })->name('home');
+    Route::get('/home', fn () => view('home'))->name('home');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity.log')->middleware('auth');
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity.log');
+
+    // ✅ Services Routes
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+    
+    // ✅ Booking a service (this must be BEFORE resource routes)
+    Route::get('/services/{service}/book', [ServiceController::class, 'book'])->name('services.book');
+
+    // ✅ Admin and Masseuse-only service creation
     Route::middleware('check.role:Admin,Masseuse')->group(function () {
-    Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
-    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+        Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+        Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     });
-    Route::resource('services', ServiceController::class);
+
+    // ✅ Resource routes (excluding 'show' to avoid conflict with /{service}/book)
     Route::resource('services', ServiceController::class)->except(['show']);
+
+    // ✅ Booking-related routes
+    Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('bookings.my');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+    Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+
+    // ✅ Profile routes
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });

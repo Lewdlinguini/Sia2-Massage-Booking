@@ -9,11 +9,21 @@ use App\Models\Service;
 class ServiceController extends Controller
 {
     public function index()
-    {
-        $services = Service::with('user')->get();
-        return view('services.index', compact('services'));
+{
+    $services = Service::with('user')->get();
+
+    // Get all active (upcoming or today) bookings for the authenticated user
+    $activeBookings = [];
+    if (auth()->check()) {
+        $activeBookings = \App\Models\Booking::where('user_id', auth()->id())
+            ->whereDate('booking_date', '>=', now()->toDateString())
+            ->pluck('service_id')
+            ->toArray();
     }
 
+    return view('services.index', compact('services', 'activeBookings'));
+    }
+    
     public function create()
     {
         return view('services.create');
@@ -89,5 +99,11 @@ public function update(Request $request, Service $service)
     $service->update($data);
 
     return redirect()->route('services.index')->with('success', 'Service updated successfully!');
+    }
+
+    public function book($serviceId)
+    {
+    $service = Service::findOrFail($serviceId);
+    return view('services.book', compact('service'));
     }
 }
