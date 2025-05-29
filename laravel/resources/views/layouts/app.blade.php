@@ -146,13 +146,17 @@
             <a class="dropdown-toggle sidebar-link" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-flower1 me-2"></i>Services
             </a>
-            <ul class="dropdown-menu dropdown-menu-light w-100 shadow-sm border-0" aria-labelledby="servicesDropdown">
-            <li><a class="dropdown-item" href="{{ route('services.index') }}">View Services</a></li>
-            <li><a class="dropdown-item" href="{{ route('bookings.my') }}">View Appointments</a></li>
-            @if(Auth::check() && (Auth::user()->role === 'Admin' || Auth::user()->role === 'Masseuse'))
-            <li><a class="dropdown-item" href="{{ route('services.create') }}">Add Services</a></li>
-            @endif
-            </ul>
+           <ul class="dropdown-menu dropdown-menu-light w-100 shadow-sm border-0" aria-labelledby="servicesDropdown">
+    <li><a class="dropdown-item" href="{{ route('services.index') }}">View Services</a></li>
+    @if(Auth::check() && Auth::user()->role !== 'Masseuse')
+    <li><a class="dropdown-item" href="{{ route('bookings.my') }}">View My Appointments</a></li>
+    @endif
+
+    @if(Auth::check() && (Auth::user()->role === 'Admin' || Auth::user()->role === 'Masseuse'))
+        <li><a class="dropdown-item" href="{{ route('bookings.masseuse') }}">View All Appointments</a></li>
+        <li><a class="dropdown-item" href="{{ route('services.create') }}">Add Services</a></li>
+    @endif
+    </ul>
         </div>
         <a href="{{ route('about') }}"><i class="bi bi-info-circle-fill me-2"></i>About</a>
         <a href="{{ route('contact') }}"><i class="bi bi-envelope-fill me-2"></i>Contact</a>

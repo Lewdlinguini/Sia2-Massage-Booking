@@ -73,4 +73,8 @@ Route::middleware('auth')->group(function () {
     // ✅ Profile routes
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::middleware('check.role:Admin,Masseuse')->group(function () {
+    Route::get('/masseuse-bookings', [BookingController::class, 'masseuseBookings'])->name('bookings.masseuse');
+});
 });

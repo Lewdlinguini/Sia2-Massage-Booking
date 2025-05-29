@@ -8,11 +8,23 @@ use App\Models\Service;
 
 class ServiceController extends Controller
 {
-    public function index()
+    
+    public function index(Request $request)
 {
-    $services = Service::with('user')->get();
+    $query = Service::with('user');
 
-    // Get all active (upcoming or today) bookings for the authenticated user
+    // Filter by search input
+    if ($request->has('search') && !empty($request->search)) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%");
+        });
+    }
+
+    $services = $query->get();
+
+    // Get active bookings for authenticated user
     $activeBookings = [];
     if (auth()->check()) {
         $activeBookings = \App\Models\Booking::where('user_id', auth()->id())
@@ -23,7 +35,7 @@ class ServiceController extends Controller
 
     return view('services.index', compact('services', 'activeBookings'));
     }
-    
+
     public function create()
     {
         return view('services.create');

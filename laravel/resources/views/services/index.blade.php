@@ -25,6 +25,27 @@
     </div>
     @endif
 
+    <form action="{{ route('services.index') }}" method="GET" class="mb-4 d-flex justify-content-center">
+    <div class="input-group" style="max-width: 320px;">
+        <input 
+            type="text" 
+            name="search" 
+            class="form-control form-control-sm rounded-start shadow-sm" 
+            placeholder="Search..." 
+            value="{{ request('search') }}" 
+            style="font-size: 0.9rem;"
+        >
+        <button 
+            class="btn btn-sm text-white rounded-end" 
+            type="submit" 
+            style="background-color: #d4a373; border: none;"
+        >
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</form>
+
+
     <div class="row g-3">
         @forelse ($services as $service)
         <div class="col-md-6 col-lg-4">

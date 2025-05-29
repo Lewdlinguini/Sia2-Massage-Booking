@@ -68,4 +68,15 @@ class BookingController extends Controller
 
         return redirect()->route('bookings.my')->with('success', 'Booking cancelled successfully.');
     }
+
+    public function masseuseBookings()
+    {
+        $user = auth()->user();
+
+        $bookings = Booking::whereHas('service', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->with(['service', 'user'])->orderBy('booking_date', 'desc')->get();
+
+        return view('services.masseuse-bookings', compact('bookings'));
+    }
 }
