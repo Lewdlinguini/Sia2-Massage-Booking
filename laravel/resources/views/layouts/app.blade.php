@@ -214,14 +214,15 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
                     @forelse (Auth::user()->unreadNotifications as $notification)
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                {{ $notification->data['message'] ?? 'You have a new booking' }}
-                            </a>
-                        </li>
-                    @empty
-                        <li><span class="dropdown-item text-muted">No new notifications</span></li>
-                    @endforelse
+    <li>
+        <a class="dropdown-item" href="{{ route('bookings.masseuse') }}">
+            {{ $notification->data['message'] ?? 'You have a new booking' }}
+        </a>
+    </li>
+@empty
+    <li><span class="dropdown-item text-muted">No new notifications</span></li>
+@endforelse
+
                 </ul>
             </div>
         </div>
