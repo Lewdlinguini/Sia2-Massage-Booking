@@ -18,6 +18,8 @@
         font-weight: 500;
         border-radius: 4px;
         transition: background-color 0.3s ease;
+        position: relative; /* added for arrow positioning */
+        padding-right: 1.5rem; /* space for arrow */
     }
 
     .sidebar .dropdown-toggle.sidebar-link:hover {
@@ -103,33 +105,84 @@
         color: white;
         cursor: pointer;
         font-size: 1.4rem;
+        user-select: none;
+        display: inline-block;
+        width: 1.5em;
+        height: 1.5em;
     }
 
-    .notification-bell.pulse::after {
-        content: '';
+    /* Remove dropdown toggle arrow only on notification bell */
+    .notification-bell.dropdown-toggle::after {
+        display: none !important;
+    }
+
+    /* Badge positioned inside the top right corner of the bell */
+    .notification-bell .badge {
         position: absolute;
-        top: 0;
-        right: 0;
-        width: 10px;
-        height: 10px;
-        background: red;
-        border-radius: 50%;
-        animation: pulse 1.5s infinite;
+        top: 0;  /* Align top edge */
+        right: 0; /* Align right edge */
+        transform: translate(25%, -25%); /* Slightly outside the corner but inside bell */
+        padding: 0.2em 0.45em;
+        font-size: 0.65rem;
+        font-weight: 700;
+        line-height: 1;
+        border-radius: 999px;
+        color: #fff;
+        background-color: #dc3545; /* bootstrap danger color */
+        pointer-events: none;
+        box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.9); /* optional: border-like effect matching navbar */
     }
 
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(1.5);
-            opacity: 0.5;
-        }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
+    /* Center container in navbar */
+    .navbar-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        height: 56px; /* match navbar height */
+        z-index: 1030; /* above other navbar items */
+    }
+
+    /* ==== Dropdown arrows for profile and sidebar dropdown ==== */
+    /* Show arrow */
+    .nav-link.dropdown-toggle,
+    .sidebar .dropdown-toggle.sidebar-link {
+        position: relative;
+        padding-right: 1.5rem; /* space for arrow */
+    }
+
+    /* Default caret arrow */
+    .nav-link.dropdown-toggle::after,
+    .sidebar .dropdown-toggle.sidebar-link::after {
+        display: inline-block;
+        margin-left: .255em;
+        vertical-align: 0.255em;
+        content: "";
+        border-top: .3em solid;
+        border-right: .3em solid transparent;
+        border-left: .3em solid transparent;
+        transition: transform 0.3s ease;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(0deg);
+    }
+
+    /* Rotate arrow when dropdown is open */
+    .nav-link.dropdown-toggle.show::after,
+    .sidebar .dropdown-toggle.sidebar-link.show::after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
+    /* ==== FIX for user profile name and dropdown arrow overlap ==== */
+    .navbar-nav .nav-link.dropdown-toggle {
+        padding-right: 2rem; /* increased padding to prevent overlap */
+        white-space: nowrap; /* prevent the name from wrapping */
+    }
+
+    .navbar-nav .nav-link.dropdown-toggle::after {
+        right: 8px; /* adjust arrow position to the right */
     }
     </style>
 </head>
@@ -137,39 +190,50 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
+    <div class="container position-relative">
         <a class="navbar-brand text-white" href="#">💆🏻 JanJan's Essential Oil</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Centered Notification Bell -->
+        @auth
+        @php
+            $unreadCount = Auth::user()->unreadNotifications->count();
+        @endphp
+        <div class="navbar-center">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle notification-bell position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" >
+                    <i class="bi bi-bell-fill" style="font-size:1.4rem; color:white;"></i>
+                    @if ($unreadCount > 0)
+                        <span class="badge rounded-pill bg-danger">
+                            {{ $unreadCount }}
+                            <span class="visually-hidden">unread notifications</span>
+                        </span>
+                    @endif
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                    @forelse (Auth::user()->unreadNotifications as $notification)
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                {{ $notification->data['message'] ?? 'You have a new booking' }}
+                            </a>
+                        </li>
+                    @empty
+                        <li><span class="dropdown-item text-muted">No new notifications</span></li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+        @endauth
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
-
-                {{-- Notification Icon --}}
-                @auth
-                <li class="nav-item dropdown me-3">
-                    <a class="nav-link dropdown-toggle notification-bell pulse" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-bell-fill"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                        @forelse (Auth::user()->unreadNotifications as $notification)
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    {{ $notification->data['message'] ?? 'You have a new booking' }}
-                                </a>
-                            </li>
-                        @empty
-                            <li><span class="dropdown-item text-muted">No new notifications</span></li>
-                        @endforelse
-                    </ul>
-                </li>
-                @endauth
 
                 {{-- User Avatar --}}
                 @auth
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         @if(Auth::user()->profile_picture)
                             <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" class="rounded-circle me-2" width="30" height="30" alt="Profile Picture">
                         @else
@@ -246,6 +310,35 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+@auth
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var notificationDropdown = document.getElementById('notificationDropdown');
+
+        if (notificationDropdown) {
+            notificationDropdown.addEventListener('show.bs.dropdown', function () {
+                fetch("{{ route('notifications.markAsRead') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        // Remove badge after marking as read
+                        let badge = notificationDropdown.querySelector('.badge');
+                        if (badge) {
+                            badge.remove();
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
+@endauth
+
 @stack('scripts')
 </body>
 </html>

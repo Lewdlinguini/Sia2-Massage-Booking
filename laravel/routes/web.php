@@ -77,5 +77,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('check.role:Admin,Masseuse')->group(function () {
     Route::get('/masseuse-bookings', [BookingController::class, 'masseuseBookings'])->name('bookings.masseuse');
     Route::get('/services/bookings/{booking}/location', [BookingController::class, 'showLocation'])->name('services.location');
+    Route::post('/notifications/mark-as-read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return response()->json(['status' => 'success']);
+})->middleware('auth')->name('notifications.markAsRead');
+
 });
 });

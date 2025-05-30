@@ -88,15 +88,24 @@
                         @endif
 
                         {{-- Booking & Action Buttons --}}
-                        @if(auth()->check() && in_array($service->id, $activeBookings))
-                        <button class="btn btn-outline-secondary w-100 fw-semibold py-1" disabled style="font-size: 0.9rem;">
-                            Already Booked
-                        </button>
-                        @else
-                        <a href="{{ route('services.book', $service->id) }}" class="btn btn-primary w-100 fw-semibold py-1" style="background: linear-gradient(90deg, #caa974, #d4a373); border: none; font-size: 0.9rem; transition: background 0.3s; border-radius: 50px;">
-                            Book This Service
-                        </a>
-                        @endif
+                        @if(auth()->check() && (auth()->user()->isUser() || auth()->user()->isAdmin()))
+                        @if(in_array($service->id, $activeBookings))
+                       <button 
+                       class="btn btn-outline-secondary w-100 fw-semibold py-1" 
+                       disabled 
+                       style="font-size: 0.9rem; border: none; outline: none; box-shadow: none;">
+                       Already Booked
+                       </button>
+                       @else
+                       <a href="{{ route('services.book', $service->id) }}" 
+                         class="btn btn-primary w-100 fw-semibold py-1" 
+                         style="background: rgba(212, 163, 115, 0.9); border: none; outline: none; box-shadow: none;">
+                         Book This Service
+                       </a>
+                       @endif
+                       @else
+                       {{-- Optional: Show nothing or a message for unauthorized roles --}}
+                       @endif
 
                         @if(auth()->check() && auth()->id() === $service->user_id)
                         <div class="d-flex flex-column gap-2 mt-2">
