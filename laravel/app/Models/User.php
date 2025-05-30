@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 
 class User extends Authenticatable
 {
@@ -19,15 +19,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-    'first_name',
-    'last_name',
-    'date_of_birth', 
-    'email',
-    'password',
-    'profile_picture',
-    'cellphone',
-    'address',
-    'role', // <-- Add this
+        'first_name',
+        'last_name',
+        'date_of_birth',
+        'email',
+        'password',
+        'profile_picture',
+        'cellphone',
+        'address',
+        'role',
     ];
 
     /**
@@ -41,17 +41,49 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
-    return [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'date_of_birth' => 'date', // <- Add this line
-    ];
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'date_of_birth' => 'date',
+        ];
+    }
+
+    /**
+     * Encrypt the cellphone before storing.
+     */
+    public function setCellphoneAttribute($value)
+    {
+        $this->attributes['cellphone'] = $value ? Crypt::encryptString($value) : null;
+    }
+
+    /**
+     * Decrypt the cellphone when retrieving.
+     */
+    public function getCellphoneAttribute($value)
+    {
+        return $value ? Crypt::decryptString($value) : null;
+    }
+
+    /**
+     * Encrypt the address before storing.
+     */
+    public function setAddressAttribute($value)
+    {
+        $this->attributes['address'] = $value ? Crypt::encryptString($value) : null;
+    }
+
+    /**
+     * Decrypt the address when retrieving.
+     */
+    public function getAddressAttribute($value)
+    {
+        return $value ? Crypt::decryptString($value) : null;
     }
 
     public function isAdmin(): bool
@@ -68,5 +100,4 @@ class User extends Authenticatable
     {
         return $this->role === 'User';
     }
-    
 }
