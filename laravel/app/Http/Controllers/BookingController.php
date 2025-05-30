@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Notifications\BookingCreated;
-use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Notifications\BookingCancelled;
+use App\Notifications\BookingCreated;
+use App\Notifications\BookingRescheduled;
+use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
@@ -28,8 +30,8 @@ class BookingController extends Controller
         $booking->booking_date = $request->booking_date;
         $booking->booking_time = $request->booking_time;
         $booking->payment_method = $request->payment_method;
-        $booking->duration = $request->duration; // New
-        $booking->price = $service->price_per_hour * $request->duration; // New
+        $booking->duration = $request->duration;
+        $booking->price = $service->price_per_hour * $request->duration;
         $booking->latitude = $request->latitude ?? null;
         $booking->longitude = $request->longitude ?? null;
         $booking->save();
@@ -69,6 +71,12 @@ class BookingController extends Controller
         $booking->booking_time = $request->booking_time;
         $booking->save();
 
+        // Notify the masseuse (not the user) about the reschedule
+        $masseuse = $booking->service->user;
+        if ($masseuse) {
+            $masseuse->notify(new BookingRescheduled($booking));
+        }
+
         return redirect()->route('bookings.my')->with('success', 'Booking updated successfully.');
     }
 
@@ -76,6 +84,12 @@ class BookingController extends Controller
     {
         if ($booking->user_id !== auth()->id()) {
             abort(403);
+        }
+
+        // Notify the masseuse before deletion
+        $masseuse = $booking->service->user;
+        if ($masseuse) {
+            $masseuse->notify(new BookingCancelled($booking));
         }
 
         $booking->delete();
@@ -90,18 +104,18 @@ class BookingController extends Controller
         $bookings = Booking::whereHas('service', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->with(['service', 'user'])
-          ->orderBy('booking_date', 'desc')
-          ->get();
+            ->orderBy('booking_date', 'desc')
+            ->get();
 
         return view('services.masseuse-bookings', compact('bookings'));
     }
 
     public function showLocation(Booking $booking)
     {
-    if (!$booking->latitude || !$booking->longitude) {
-        abort(404, 'Location not available');
+        if (!$booking->latitude || !$booking->longitude) {
+            abort(404, 'Location not available');
+        }
+
+        return view('services.location', compact('booking'));
     }
-    return view('services.location', compact('booking'));
-   }
-   
 }

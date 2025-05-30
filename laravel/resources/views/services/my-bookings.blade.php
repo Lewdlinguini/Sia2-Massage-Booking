@@ -241,28 +241,32 @@
         </div>
 
         <!-- Reschedule Modal -->
-        <div class="modal fade" id="rescheduleModal{{ $booking->id }}" tabindex="-1" aria-labelledby="rescheduleModalLabel{{ $booking->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <form method="POST" action="{{ route('bookings.update', $booking->id) }}">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-content">
-                        <div class="modal-header" style="background: #d4a373cc; color: white;">
-                            <h5 class="modal-title" id="rescheduleModalLabel{{ $booking->id }}">Reschedule Booking</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <label for="booking_date{{ $booking->id }}" class="form-label">Select new date</label>
-                            <input type="date" class="form-control" id="booking_date{{ $booking->id }}" name="booking_date" value="{{ \Carbon\Carbon::parse($booking->booking_date)->format('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </form>
+        <!-- Reschedule Modal -->
+<div class="modal fade" id="rescheduleModal{{ $booking->id }}" tabindex="-1" aria-labelledby="rescheduleModalLabel{{ $booking->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="POST" action="{{ route('bookings.update', $booking->id) }}">
+            @csrf
+            @method('PUT')
+            <div class="modal-content">
+                <div class="modal-header" style="background: #d4a373cc; color: white;">
+                    <h5 class="modal-title" id="rescheduleModalLabel{{ $booking->id }}">Reschedule Booking</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="booking_date{{ $booking->id }}" class="form-label">Select new date</label>
+                    <input type="date" class="form-control" id="booking_date{{ $booking->id }}" name="booking_date" value="{{ \Carbon\Carbon::parse($booking->booking_date)->format('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
+
+                    <label for="booking_time{{ $booking->id }}" class="form-label mt-3">Select new time</label>
+                    <input type="time" class="form-control" id="booking_time{{ $booking->id }}" name="booking_time" value="{{ \Carbon\Carbon::parse($booking->booking_time)->format('H:i') }}" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
-        </div>
+        </form>
+    </div>
+</div>
 
         <!-- Cancel Confirmation Modal -->
         <div class="modal fade" id="cancelModal{{ $booking->id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ $booking->id }}" aria-hidden="true">
