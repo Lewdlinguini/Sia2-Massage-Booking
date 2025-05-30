@@ -46,6 +46,22 @@
                     >
                 </div>
 
+                     {{-- Price Per Hour --}}
+<div class="mb-4">
+    <label for="price_per_hour" class="form-label fw-semibold" style="color: #4a3b2b;">Price Per Hour (₱)</label>
+    <input 
+        type="number" 
+        class="form-control form-control-lg rounded-3 border-0 shadow-sm" 
+        name="price_per_hour" 
+        id="price_per_hour" 
+        placeholder="e.g., 600" 
+        value="{{ old('price_per_hour', $service->price_per_hour ?? '') }}" 
+        step="0.01"
+        min="0"
+        required
+    >
+</div>
+
                 {{-- Service Description --}}
                 <div class="mb-4">
                     <label for="description" class="form-label fw-semibold" style="color: #4a3b2b;">Service Description</label>

@@ -48,9 +48,10 @@ class ServiceController extends Controller
         'name' => 'required|string|max:255',
         'description' => 'nullable|string',
         'image' => 'nullable|image|max:2048', // Add validation for the image
+        'price_per_hour' => 'required|numeric|min:0',
     ]);
 
-    $data = $request->only('name', 'description');
+    $data = $request->only('name', 'description', 'price_per_hour');
 
     // Check if an image was uploaded
     if ($request->hasFile('image')) {

@@ -95,10 +95,22 @@
 
             <div class="booking-details">
                 <div class="booking-title">{{ $booking->service->name }}</div>
-                <div class="booking-subtitle">Booked by: {{ $booking->user->first_name ?? 'N/A' }} {{ $booking->user->last_name ?? '' }}</div>
+                <div class="booking-subtitle">
+                    Booked by: {{ $booking->user->first_name ?? 'N/A' }} {{ $booking->user->last_name ?? '' }}
+                </div>
                 <div class="booking-meta">Payment: {{ ucfirst($booking->payment_method) }}</div>
                 <div class="booking-meta">
                     Date & Time: {{ \Carbon\Carbon::parse($booking->booking_date . ' ' . $booking->booking_time)->format('M d, Y • h:i A') }}
+                </div>
+
+                {{-- Added Duration --}}
+                <div class="booking-meta">
+                    Duration: {{ $booking->duration }} hour{{ $booking->duration > 1 ? 's' : '' }}
+                </div>
+
+                {{-- Added Price --}}
+                <div class="booking-meta">
+                    Price: ₱{{ number_format($booking->price, 2) }}
                 </div>
             </div>
 

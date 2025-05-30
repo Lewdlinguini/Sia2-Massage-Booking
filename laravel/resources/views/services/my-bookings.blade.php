@@ -5,20 +5,20 @@
     body {
         background-color: #f5f5f5;
     }
-      .spinning-hourglass {
-    width: 40px;
-    height: 40px;
-    border: 5px solid #ccc;
-    border-top: 5px solid #0073bb;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-}
+    .spinning-hourglass {
+        width: 40px;
+        height: 40px;
+        border: 5px solid #ccc;
+        border-top: 5px solid #0073bb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
 
     @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-     }
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
     .booking-card {
         background: white;
@@ -202,9 +202,19 @@
                 <div class="booking-title">{{ $booking->service->name }}</div>
                 <div class="booking-subtitle">Masseuse: {{ $booking->service->user->first_name ?? 'N/A' }}</div>
                 <div class="booking-meta">Payment: {{ ucfirst($booking->payment_method) }}</div>
-                <div class="booking-meta"> Date & Time: {{ \Carbon\Carbon::parse($booking->booking_date . ' ' . $booking->booking_time)->format('M d, Y • h:i A') }}
+                <div class="booking-meta">
+                    Date & Time: {{ \Carbon\Carbon::parse($booking->booking_date . ' ' . $booking->booking_time)->format('M d, Y • h:i A') }}
                 </div>
 
+                {{-- Added Duration --}}
+                <div class="booking-meta">
+                    Duration: {{ $booking->duration }} hour{{ $booking->duration > 1 ? 's' : '' }}
+                </div>
+
+                {{-- Added Price --}}
+                <div class="booking-meta">
+                    Price: ₱{{ number_format($booking->price, 2) }}
+                </div>
             </div>
 
             <div>
@@ -255,30 +265,30 @@
         </div>
 
         <!-- Cancel Confirmation Modal -->
-<div class="modal fade" id="cancelModal{{ $booking->id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ $booking->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 shadow-sm">
-            <div class="modal-header bg-danger text-white rounded-top">
-                <h5 class="modal-title" id="cancelModalLabel{{ $booking->id }}">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Cancellation
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body fs-6 px-4 py-3">
-                Are you sure you want to cancel your booking for <strong>{{ $booking->service->name }}</strong> on 
-                <strong>{{ \Carbon\Carbon::parse($booking->booking_date)->format('M d, Y') }}</strong>?
-            </div>
-            <div class="modal-footer justify-content-center gap-3">
-                <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="m-0 p-0">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger px-4 fw-semibold">Cancel Booking</button>
-                </form>
-                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Close</button>
+        <div class="modal fade" id="cancelModal{{ $booking->id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ $booking->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 shadow-sm">
+                    <div class="modal-header bg-danger text-white rounded-top">
+                        <h5 class="modal-title" id="cancelModalLabel{{ $booking->id }}">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Cancellation
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body fs-6 px-4 py-3">
+                        Are you sure you want to cancel your booking for <strong>{{ $booking->service->name }}</strong> on 
+                        <strong>{{ \Carbon\Carbon::parse($booking->booking_date)->format('M d, Y') }}</strong>?
+                    </div>
+                    <div class="modal-footer justify-content-center gap-3">
+                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="m-0 p-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger px-4 fw-semibold">Cancel Booking</button>
+                        </form>
+                        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
         @endforeach
     @endif
 </div>

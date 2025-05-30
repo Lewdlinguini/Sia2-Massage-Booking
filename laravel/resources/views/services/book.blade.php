@@ -27,17 +27,34 @@
             </div>
 
             <div>
-    <label for="bookingTime" class="form-label fw-semibold text-secondary mb-1">Select a time</label>
-    <input 
-        type="time" 
-        class="form-control form-control-lg rounded-pill border-2 py-2" 
-        name="booking_time" 
-        id="bookingTime" 
-        required
-        style="border-color: #d4a373;"
-    >
-</div>
+                <label for="bookingTime" class="form-label fw-semibold text-secondary mb-1">Select a time</label>
+                <input 
+                    type="time" 
+                    class="form-control form-control-lg rounded-pill border-2 py-2" 
+                    name="booking_time" 
+                    id="bookingTime" 
+                    required
+                    style="border-color: #d4a373;"
+                >
+            </div>
 
+            <div>
+                <label for="duration" class="form-label fw-semibold text-secondary mb-1">Select Duration (hours)</label>
+                <select 
+                    name="duration" 
+                    id="duration" 
+                    class="form-select form-select-lg rounded-pill border-2 py-2" 
+                    required
+                    style="border-color: #d4a373;"
+                >
+                    @for ($i = 1; $i <= 4; $i++)
+                        <option value="{{ $i }}">
+                            {{ $i }} hour{{ $i > 1 ? 's' : '' }} — ₱{{ number_format($i * $service->price_per_hour, 2) }}
+    </option>
+                        </option>
+                    @endfor
+                </select>
+            </div>
 
             <div>
                 <label class="form-label fw-semibold text-secondary mb-1">Payment Method</label>
@@ -99,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             map.setView([lat, lng], 15);
             L.marker([lat, lng]).addTo(map).bindPopup("Your Location").openPopup();
 
-            // ✅ Set hidden input values
+            // Set hidden input values
             document.getElementById('latitude').value = lat;
             document.getElementById('longitude').value = lng;
 

@@ -15,9 +15,12 @@ class BookingController extends Controller
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required|date_format:H:i',
             'payment_method' => 'required|string',
+            'duration' => 'required|numeric|min:0.5',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
+
+        $service = \App\Models\Service::findOrFail($request->service_id);
 
         $booking = new Booking();
         $booking->user_id = auth()->id();
@@ -25,6 +28,8 @@ class BookingController extends Controller
         $booking->booking_date = $request->booking_date;
         $booking->booking_time = $request->booking_time;
         $booking->payment_method = $request->payment_method;
+        $booking->duration = $request->duration; // New
+        $booking->price = $service->price_per_hour * $request->duration; // New
         $booking->latitude = $request->latitude ?? null;
         $booking->longitude = $request->longitude ?? null;
         $booking->save();
