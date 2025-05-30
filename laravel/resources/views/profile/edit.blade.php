@@ -134,8 +134,48 @@
                     class="btn w-100 fw-semibold py-1" 
                     style="background: rgba(212, 163, 115, 0.9); color: white; font-size: 0.9rem;">
                 Save Changes
+
+
             </button>
         </form>
+        <!-- Delete Profile Button -->
+<button type="button"
+        class="btn btn-outline-danger mt-3 w-100 fw-semibold py-1"
+        data-bs-toggle="modal" data-bs-target="#deleteProfileModal">
+    Delete Profile
+</button>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteProfileModal" tabindex="-1" aria-labelledby="deleteProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header bg-danger text-white rounded-top">
+                <h5 class="modal-title" id="deleteProfileModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ route('profile.destroy') }}">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body">
+                    <p class="text-muted">Please enter your password to confirm account deletion.</p>
+                    <div class="mb-3">
+                        <label for="delete-password" class="form-label">Password</label>
+                        <input type="password" class="form-control @error('password') is-invalid @enderror"
+                               id="delete-password" name="password" required>
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <p class="text-danger small mt-2">This action is permanent and cannot be undone.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger fw-semibold">Delete Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     </div>
 </div>
 
