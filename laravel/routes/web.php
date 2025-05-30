@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Admin\UserManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,5 +83,9 @@ Route::middleware('auth')->group(function () {
     return response()->json(['status' => 'success']);
 })->middleware('auth')->name('notifications.markAsRead');
 
+});
+    Route::middleware(['auth', 'check.role:Admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('users/create', [UserManagementController::class, 'create'])->name('users.create');
+    Route::post('users', [UserManagementController::class, 'store'])->name('users.store');
 });
 });

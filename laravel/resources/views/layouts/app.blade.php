@@ -243,15 +243,22 @@
                         {{ Auth::user()->first_name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ route('activity.log') }}">Activity Log</a></li>
-                        <li>
-                            <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0 m-0">
-                                @csrf
-                                <button type="submit" class="btn btn-link dropdown-item">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
+    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+
+    @if(auth()->check() && auth()->user()->role === 'Admin')
+        <li><a class="dropdown-item" href="{{ route('admin.users.create') }}">Admin Panel</a></li>
+    @endif
+
+    <li><a class="dropdown-item" href="{{ route('activity.log') }}">Activity Log</a></li>
+
+    <li>
+        <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0 m-0">
+            @csrf
+            <button type="submit" class="btn btn-link dropdown-item">Logout</button>
+        </form>
+    </li>
+</ul>
+
                 </li>
                 @endauth
 
