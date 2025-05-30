@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\BookingCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Service;
 
 class ServiceController extends Controller
 {
-    
+
     public function index(Request $request)
 {
     $query = Service::with('user');

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\BookingCreated;
 use Illuminate\Http\Request;
 use App\Models\Booking;
-use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -13,57 +13,66 @@ class BookingController extends Controller
         $request->validate([
             'service_id' => 'required|exists:services,id',
             'booking_date' => 'required|date|after_or_equal:today',
+            'booking_time' => 'required|date_format:H:i',
             'payment_method' => 'required|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         $booking = new Booking();
-        $booking->user_id = Auth::id(); 
+        $booking->user_id = auth()->id();
         $booking->service_id = $request->service_id;
         $booking->booking_date = $request->booking_date;
+        $booking->booking_time = $request->booking_time;
         $booking->payment_method = $request->payment_method;
-        // Assuming you added latitude and longitude to the form (hidden inputs or JS)
-        $booking->latitude = $request->latitude ?? null;  
+        $booking->latitude = $request->latitude ?? null;
         $booking->longitude = $request->longitude ?? null;
         $booking->save();
 
-        // Redirect to my-bookings route with success flag
+        $masseuse = $booking->service->user;
+        if ($masseuse) {
+            $masseuse->notify(new BookingCreated($booking));
+        }
+
         return redirect()->route('bookings.my')->with('booking_success', true);
     }
 
     public function myBookings()
     {
         $userId = auth()->id();
-        
+
         $bookings = Booking::with('service.user')
             ->where('user_id', $userId)
             ->orderBy('booking_date', 'desc')
             ->get();
-            
+
         return view('services.my-bookings', compact('bookings'));
     }
-    
+
     public function update(Request $request, Booking $booking)
     {
-        // Check if the user owns the booking
         if ($booking->user_id !== auth()->id()) {
             abort(403);
         }
 
         $request->validate([
             'booking_date' => 'required|date|after_or_equal:today',
+            'booking_time' => 'required|date_format:H:i',
         ]);
 
         $booking->booking_date = $request->booking_date;
+        $booking->booking_time = $request->booking_time;
         $booking->save();
 
         return redirect()->route('bookings.my')->with('success', 'Booking updated successfully.');
     }
-    
+
     public function destroy(Booking $booking)
     {
         if ($booking->user_id !== auth()->id()) {
             abort(403);
         }
+
         $booking->delete();
 
         return redirect()->route('bookings.my')->with('success', 'Booking cancelled successfully.');
@@ -75,8 +84,19 @@ class BookingController extends Controller
 
         $bookings = Booking::whereHas('service', function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        })->with(['service', 'user'])->orderBy('booking_date', 'desc')->get();
+        })->with(['service', 'user'])
+          ->orderBy('booking_date', 'desc')
+          ->get();
 
         return view('services.masseuse-bookings', compact('bookings'));
     }
+
+    public function showLocation(Booking $booking)
+    {
+    if (!$booking->latitude || !$booking->longitude) {
+        abort(404, 'Location not available');
+    }
+    return view('services.location', compact('booking'));
+   }
+   
 }

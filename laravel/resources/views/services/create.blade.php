@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-center align-items-start py-5" style="min-height: 90vh; background-color: #f9f8f6;">
+<div class="d-flex justify-content-center align-items-start py-5" style="min-height: 90vh;">
     <div class="card shadow-sm rounded-4 p-4 d-flex flex-row" style="width: 100%; max-width: 900px; border: none; gap: 2rem;">
 
         {{-- Left Column: Form --}}

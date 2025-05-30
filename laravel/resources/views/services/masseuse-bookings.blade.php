@@ -97,13 +97,19 @@
                 <div class="booking-title">{{ $booking->service->name }}</div>
                 <div class="booking-subtitle">Booked by: {{ $booking->user->first_name ?? 'N/A' }} {{ $booking->user->last_name ?? '' }}</div>
                 <div class="booking-meta">Payment: {{ ucfirst($booking->payment_method) }}</div>
-                <div class="booking-meta">Date: {{ \Carbon\Carbon::parse($booking->booking_date)->format('M d, Y') }}</div>
+                <div class="booking-meta">
+                    Date & Time: {{ \Carbon\Carbon::parse($booking->booking_date . ' ' . $booking->booking_time)->format('M d, Y • h:i A') }}
+                </div>
             </div>
 
             <div>
                 <div class="booking-status {{ \Carbon\Carbon::parse($booking->booking_date)->isPast() ? 'status-completed' : 'status-upcoming' }}">
                     {{ \Carbon\Carbon::parse($booking->booking_date)->isPast() ? 'Completed' : 'Upcoming' }}
                 </div>
+
+                <a href="{{ route('services.location', $booking->id) }}" class="btn btn-sm btn-outline-primary mt-2">
+                    View Location
+                </a>
             </div>
         </div>
         @endforeach

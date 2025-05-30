@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #f8f9fa;">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="shadow-sm rounded-4 p-4 bg-white w-100" style="max-width: 480px;">
         <h3 class="text-center mb-4" style="color: rgba(212, 163, 115, 0.9);">Edit Profile</h3>
 

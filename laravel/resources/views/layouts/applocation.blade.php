@@ -7,9 +7,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
     @stack('styles')
 
     <style>    
+    /* Sidebar styles */
     .sidebar .dropdown-toggle.sidebar-link {
         display: block;
         padding: 12px 20px;
@@ -43,7 +46,7 @@
         font-family: 'Poppins', sans-serif;
         background-color: #fffaf3;
         color: #4a3b2b;
-        padding-top: 56px;
+        padding-top: 56px; /* for fixed navbar */
     }
 
     .navbar {
@@ -76,6 +79,13 @@
         background-color: #f0e0d0;
         min-height: 100vh;
         padding-top: 1rem;
+        position: fixed;
+        top: 56px; /* navbar height */
+        left: 0;
+        width: 220px;
+        overflow-y: auto;
+        border-right: 1px solid #d4a373;
+        z-index: 1020; /* above main content */
     }
 
     .sidebar a {
@@ -91,6 +101,26 @@
     .sidebar a:hover {
         background-color: #e1cbb5;
         color: #3b2e1f;
+    }
+
+    main {
+        margin-left: 220px;
+        padding: 2rem 1.5rem;
+        min-height: calc(100vh - 56px - 60px); /* full viewport minus navbar and footer */
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        max-width: 900px;
+        margin-top: 56px;
+        margin-bottom: 2rem;
+    }
+
+    /* Map styles */
+    #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .input-group-text {
@@ -129,6 +159,24 @@
         100% {
             transform: scale(1);
             opacity: 1;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+            border-right: none;
+        }
+        main {
+            margin-left: 0;
+            margin-top: 1rem;
+            max-width: 100%;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 1rem;
         }
     }
     </style>
@@ -246,6 +294,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 @stack('scripts')
 </body>
 </html>

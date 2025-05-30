@@ -202,7 +202,9 @@
                 <div class="booking-title">{{ $booking->service->name }}</div>
                 <div class="booking-subtitle">Masseuse: {{ $booking->service->user->first_name ?? 'N/A' }}</div>
                 <div class="booking-meta">Payment: {{ ucfirst($booking->payment_method) }}</div>
-                <div class="booking-meta">Date: {{ \Carbon\Carbon::parse($booking->booking_date)->format('M d, Y') }}</div>
+                <div class="booking-meta"> Date & Time: {{ \Carbon\Carbon::parse($booking->booking_date . ' ' . $booking->booking_time)->format('M d, Y • h:i A') }}
+                </div>
+
             </div>
 
             <div>

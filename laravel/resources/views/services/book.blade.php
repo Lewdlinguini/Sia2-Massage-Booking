@@ -27,6 +27,19 @@
             </div>
 
             <div>
+    <label for="bookingTime" class="form-label fw-semibold text-secondary mb-1">Select a time</label>
+    <input 
+        type="time" 
+        class="form-control form-control-lg rounded-pill border-2 py-2" 
+        name="booking_time" 
+        id="bookingTime" 
+        required
+        style="border-color: #d4a373;"
+    >
+</div>
+
+
+            <div>
                 <label class="form-label fw-semibold text-secondary mb-1">Payment Method</label>
                 <select 
                     class="form-select form-select-lg rounded-pill border-2 py-2" 
@@ -56,6 +69,10 @@
             <label class="form-label fw-semibold text-secondary mb-2 d-block">Your Location</label>
             <div id="map" style="height: 280px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"></div>
         </div>
+
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
     </form>
 </div>
 
@@ -77,8 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
+
+            // Set the map view
             map.setView([lat, lng], 15);
             L.marker([lat, lng]).addTo(map).bindPopup("Your Location").openPopup();
+
+            // ✅ Set hidden input values
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+
         }, function() {
             alert("Location permission denied.");
         });
