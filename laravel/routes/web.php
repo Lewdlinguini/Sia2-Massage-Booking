@@ -11,6 +11,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\SecurityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     });
 
+    Route::view('/profile/security', 'profile.security')->name('profile.security');
+    Route::put('/profile/security/password', [SecurityController::class, 'updatePassword'])->name('profile.password.update');
+    
     // ✅ Resource routes (excluding 'show' to avoid conflict with /{service}/book)
     Route::resource('services', ServiceController::class)->except(['show']);
 
