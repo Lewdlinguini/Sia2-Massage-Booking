@@ -2,7 +2,9 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Activity Log</h2>
+    <h1 class="display-4 fw-bold mb-3" style="color: #b97f5a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    Activity Log
+    </h1>
 
     <table class="table table-bordered">
         <thead>

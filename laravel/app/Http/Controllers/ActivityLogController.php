@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class ActivityLogController extends Controller
 {
     public function index()
     {
-        // Example data (replace this with real log data later)
-        $logs = [
-            ['time' => now()->subMinutes(10)->toDateTimeString(), 'activity' => 'Logged in'],
-            ['time' => now()->subMinutes(5)->toDateTimeString(), 'activity' => 'Visited dashboard'],
-        ];
+        $userId = Auth::id();
+        $logFile = storage_path("logs/activity_user_{$userId}.log");
+        $logs = [];
+
+        if (File::exists($logFile)) {
+            $lines = File::lines($logFile)->toArray();
+
+            foreach ($lines as $line) {
+                if (preg_match('/\[(.*?)\] (.*)/', $line, $matches)) {
+                    $logs[] = [
+                        'time' => $matches[1],
+                        'activity' => $matches[2],
+                    ];
+                }
+            }
+        }
 
         return view('activity-log', compact('logs'));
     }

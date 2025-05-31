@@ -7,6 +7,7 @@ use App\Notifications\BookingCancelled;
 use App\Notifications\BookingCreated;
 use App\Notifications\BookingRescheduled;
 use Illuminate\Http\Request;
+use App\Services\ActivityLogger;
 
 class BookingController extends Controller
 {
@@ -35,6 +36,8 @@ class BookingController extends Controller
         $booking->latitude = $request->latitude ?? null;
         $booking->longitude = $request->longitude ?? null;
         $booking->save();
+
+        ActivityLogger::log(auth()->id(), 'Created a booking (ID: ' . $booking->id . ')');
 
         $masseuse = $booking->service->user;
         if ($masseuse) {
@@ -71,6 +74,8 @@ class BookingController extends Controller
         $booking->booking_time = $request->booking_time;
         $booking->save();
 
+        ActivityLogger::log(auth()->id(), 'Updated booking (ID: ' . $booking->id . ')');
+
         // Notify the masseuse (not the user) about the reschedule
         $masseuse = $booking->service->user;
         if ($masseuse) {
@@ -93,6 +98,8 @@ class BookingController extends Controller
         }
 
         $booking->delete();
+
+        ActivityLogger::log(auth()->id(), 'Cancelled booking (ID: ' . $booking->id . ')');
 
         return redirect()->route('bookings.my')->with('success', 'Booking cancelled successfully.');
     }
