@@ -57,6 +57,14 @@
                        id="password_confirmation" name="password_confirmation" required>
             </div>
 
+            <!-- 2FA Toggle -->
+            <div class="d-flex justify-content-between align-items-center mb-4" style="font-size: 0.9rem;">
+                <label for="enable_2fa" class="mb-0 fw-semibold" style="color: #4a3b2b;">Enable Two-Factor Authentication (2FA)</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="enable_2fa" name="enable_2fa" disabled>
+                </div>
+            </div>
+
             <button type="submit" 
                     class="btn w-100 fw-semibold py-1" 
                     style="background: rgba(212, 163, 115, 0.9); color: white; font-size: 0.9rem;">

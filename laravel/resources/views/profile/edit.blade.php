@@ -131,17 +131,19 @@
             </div>
 
             <button type="submit" 
-                    class="btn w-100 fw-semibold py-1" 
-                    style="background: rgba(212, 163, 115, 0.9); color: white; font-size: 0.9rem;">
-                Save Changes
-
-
-            </button>
+        class="btn w-100 fw-semibold py-1" 
+        style="background: rgba(212, 163, 115, 0.9); color: white; font-size: 0.9rem; border-radius: 50px;">
+    Save Changes
+</button>
         </form>
         <!-- Delete Profile Button -->
-<button type="button"
-        class="btn btn-outline-danger mt-3 w-100 fw-semibold py-1"
-        data-bs-toggle="modal" data-bs-target="#deleteProfileModal">
+<button 
+    type="button" 
+    class="btn btn-danger w-100 fw-semibold py-1 delete-btn mt-4" 
+    data-bs-toggle="modal" 
+    data-bs-target="#deleteProfileModal"
+    style="font-size: 0.9rem; border-radius: 50px;"
+>
     Delete Profile
 </button>
 
