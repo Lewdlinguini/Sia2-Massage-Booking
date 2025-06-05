@@ -94,36 +94,31 @@ class ServiceController extends Controller
 
     public function update(Request $request, Service $service)
     {
-        if (auth()->id() !== $service->user_id) {
-            abort(403);
-        }
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-        ]);
-
-        $data = $request->only('name', 'description');
-
-        if ($request->hasFile('image')) {
-            if ($service->image && \Storage::disk('public')->exists($service->image)) {
-                \Storage::disk('public')->delete($service->image);
-            }
-            $data['image'] = $request->file('image')->store('services', 'public');
-        }
-
-        $service->update($data);
-
-        // Corrected logging call
-        ActivityLogger::log(auth()->id(), 'Updated service "' . $service->name . '" (ID: ' . $service->id . ')');
-
-        return redirect()->route('services.index')->with('success', 'Service updated successfully!');
+    if (auth()->id() !== $service->user_id) {
+        abort(403);
     }
 
-    public function book($serviceId)
-    {
-        $service = Service::findOrFail($serviceId);
-        return view('services.book', compact('service'));
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'price_per_hour' => 'required|numeric|min:0',
+        'image' => 'nullable|image|max:2048',
+    ]);
+
+    $data = $request->only('name', 'description', 'price_per_hour');
+
+    if ($request->hasFile('image')) {
+        if ($service->image && \Storage::disk('public')->exists($service->image)) {
+            \Storage::disk('public')->delete($service->image);
+        }
+        $data['image'] = $request->file('image')->store('services', 'public');
     }
+
+    $service->update($data);
+
+    ActivityLogger::log(auth()->id(), 'Updated service "' . $service->name . '" (ID: ' . $service->id . ')');
+
+    return redirect()->route('services.index')->with('success', 'Service updated successfully!');
+    }
+
 }
