@@ -52,7 +52,7 @@
 
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-        <a class="navbar-brand text-white" href="#">JanJan's Essential Oil</a>
+        <a class="navbar-brand text-white" href="#">💆🏻 JanJan's Essential Oil</a>
     </div>
 </nav>
 

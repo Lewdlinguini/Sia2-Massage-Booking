@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\EmailCodeVerificationController;
 use App\Http\Controllers\Auth\TwoFactorLoginController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\HomeController;
 
 // Redirect root URL to login
 Route::get('/', fn () => redirect('/login'));
@@ -51,21 +53,13 @@ Route::middleware('auth')->group(function () {
 
 // Verified users — full access
 Route::middleware('auth')->group(function () {
-    // /home with manual email verified check
-    Route::get('/home', function () {
-        $user = Auth::user();
-        if ($user && is_null($user->email_verified_at)) {
-            Auth::logout();
-            session()->invalidate();
-            session()->regenerateToken();
-            return redirect()->route('login')->withErrors([
-                'email' => 'Please verify your email before accessing the home page.',
-            ]);
-        }
-        return view('home');
-    })->name('home');
+
+    // Use HomeController@index instead of closure
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::post('/rate', [App\Http\Controllers\RatingController::class, 'store'])->name('rate.service');
 
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity.log');
 

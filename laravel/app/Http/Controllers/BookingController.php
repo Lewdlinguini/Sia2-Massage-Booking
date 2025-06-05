@@ -13,38 +13,44 @@ class BookingController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
-            'service_id' => 'required|exists:services,id',
-            'booking_date' => 'required|date|after_or_equal:today',
-            'booking_time' => 'required|date_format:H:i',
-            'payment_method' => 'required|string',
-            'duration' => 'required|numeric|min:0.5',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
+    $request->validate([
+        'service_id' => 'required|exists:services,id',
+        'booking_date' => 'required|date|after_or_equal:today',
+        'booking_time' => 'required|date_format:H:i',
+        'payment_method' => 'required|string',
+        'duration' => 'required|numeric|min:0.5',
+        'latitude' => 'nullable|numeric',
+        'longitude' => 'nullable|numeric',
+    ]);
 
-        $service = \App\Models\Service::findOrFail($request->service_id);
+    $service = \App\Models\Service::findOrFail($request->service_id);
 
-        $booking = new Booking();
-        $booking->user_id = auth()->id();
-        $booking->service_id = $request->service_id;
-        $booking->booking_date = $request->booking_date;
-        $booking->booking_time = $request->booking_time;
-        $booking->payment_method = $request->payment_method;
-        $booking->duration = $request->duration;
-        $booking->price = $service->price_per_hour * $request->duration;
-        $booking->latitude = $request->latitude ?? null;
-        $booking->longitude = $request->longitude ?? null;
-        $booking->save();
+    $booking = new Booking();
+    $booking->user_id = auth()->id();
+    $booking->service_id = $request->service_id;
+    $booking->booking_date = $request->booking_date;
+    $booking->booking_time = $request->booking_time;
+    $booking->payment_method = $request->payment_method;
+    $booking->duration = $request->duration;
+    $booking->price = $service->price_per_hour * $request->duration;
+    $booking->latitude = $request->latitude ?? null;
+    $booking->longitude = $request->longitude ?? null;
+    $booking->save();
 
-        ActivityLogger::log(auth()->id(), 'Created a booking (ID: ' . $booking->id . ')');
+    // Increment bookings_count for the service
+    $service = \App\Models\Service::find($booking->service_id);
+    if ($service) {
+        $service->increment('bookings_count');
+    }
 
-        $masseuse = $booking->service->user;
-        if ($masseuse) {
-            $masseuse->notify(new BookingCreated($booking));
-        }
+    ActivityLogger::log(auth()->id(), 'Created a booking (ID: ' . $booking->id . ')');
 
-        return redirect()->route('bookings.my')->with('booking_success', true);
+    $masseuse = $booking->service->user;
+    if ($masseuse) {
+        $masseuse->notify(new BookingCreated($booking));
+    }
+
+    return redirect()->route('bookings.my')->with('booking_success', true);
     }
 
     public function myBookings()

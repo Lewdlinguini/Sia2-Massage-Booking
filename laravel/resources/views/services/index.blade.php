@@ -72,6 +72,41 @@
                         <p class="card-text text-muted mb-3 fs-sm" style="min-height: 50px; font-size: 0.85rem;">
                             {{ Str::limit($service->description, 90) }}
                         </p>
+                        {{-- Rating and Book Count --}}
+<div class="d-flex justify-content-center align-items-center gap-3 mb-2">
+    {{-- Star Rating --}}
+    <div>
+        @for ($i = 1; $i <= 5; $i++)
+            <i class="bi {{ $i <= round($service->average_rating) ? 'bi-star-fill text-warning' : 'bi-star text-muted' }}"></i>
+        @endfor
+        <small class="text-muted">({{ number_format($service->average_rating, 1) }})</small>
+    </div>
+
+    {{-- Book Count --}}
+    <div class="text-secondary" style="font-size: 0.85rem;">
+        <i class="bi bi-bookmark-check"></i> {{ $service->bookings_count }} booked
+    </div>
+</div>
+
+{{-- Rating Form (logged-in users except owner) --}}
+@if(auth()->check() && auth()->id() !== $service->user_id)
+    <form action="{{ route('rate.service') }}" method="POST"
+          class="d-flex justify-content-center align-items-center gap-1 mb-2">
+        @csrf
+        <input type="hidden" name="service_id" value="{{ $service->id }}">
+        @for ($i = 1; $i <= 5; $i++)
+            @php
+                $myVote = optional($service->ratings
+                            ->where('user_id', auth()->id())
+                            ->first())->stars ?? 0;
+            @endphp
+            <button name="stars" value="{{ $i }}" type="submit"
+                    class="btn btn-sm p-0 border-0 bg-transparent text-warning">
+                <i class="bi bi-star{{ $i <= $myVote ? '-fill' : '' }}"></i>
+            </button>
+        @endfor
+    </form>
+@endif
 
                         {{-- Provider Profile Info --}}
                         @if($service->user)
