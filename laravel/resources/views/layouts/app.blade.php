@@ -246,10 +246,6 @@
 
     <li><a class="dropdown-item" href="{{ route('profile.security') }}">Security</a></li>
 
-    @if(auth()->check() && auth()->user()->role === 'Admin')
-        <li><a class="dropdown-item" href="{{ route('admin.users.create') }}">Admin Panel</a></li>
-    @endif
-
     <li><a class="dropdown-item" href="{{ route('activity.log') }}">Activity Log</a></li>
 
     <li>

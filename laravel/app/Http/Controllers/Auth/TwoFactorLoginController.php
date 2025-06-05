@@ -58,6 +58,11 @@ class TwoFactorLoginController extends Controller
 
             $request->session()->forget('2fa:user:id');
 
+            // Redirect based on user role
+            if ($user->role === 'Admin') {
+            return redirect()->intended(route('admin.dashboard'));
+            }
+
             return redirect()->intended('/home');
         }
 

@@ -66,7 +66,8 @@ class LoginController extends Controller
 
                 return redirect()->route('2fa.form');
             }
-
+            
+            $user->update(['last_login_at' => now()]);
             // 3️⃣ No 2FA, go directly to home
             return redirect()->intended('/home');
         }

@@ -121,4 +121,9 @@ class ServiceController extends Controller
     return redirect()->route('services.index')->with('success', 'Service updated successfully!');
     }
 
+    public function book($serviceId)
+    {
+        $service = Service::findOrFail($serviceId);
+        return view('services.book', compact('service'));
+    }
 }

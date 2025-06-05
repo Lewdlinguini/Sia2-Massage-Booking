@@ -79,6 +79,10 @@ class SecurityController extends Controller
 
     public function show2faForm()
     {
-    return view('profile.security'); 
+    if (auth()->user()->role === 'Admin') {
+        return view('admin.profile.security');
+    } else {
+        return view('profile.security');
+    }
     }
 }

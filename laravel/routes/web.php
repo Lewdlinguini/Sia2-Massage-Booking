@@ -17,6 +17,7 @@ use App\Http\Controllers\EmailCodeVerificationController;
 use App\Http\Controllers\Auth\TwoFactorLoginController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\DashboardController;
 
 // Redirect root URL to login
 Route::get('/', fn () => redirect('/login'));
@@ -106,9 +107,21 @@ Route::middleware('auth')->group(function () {
         return response()->json(['status' => 'success']);
     })->name('notifications.markAsRead');
 
-    // Admin-only
-    Route::middleware('check.role:Admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('users/create', [UserManagementController::class, 'create'])->name('users.create');
-        Route::post('users', [UserManagementController::class, 'store'])->name('users.store');
-    });
+    
+    // Admin routes — only for Admin role
+Route::middleware(['auth', 'check.role:Admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard route
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // User management routes
+    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('users.resetPassword');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/security', [SecurityController::class, 'show2faForm'])->name('profile.security');
+});
 });
