@@ -51,6 +51,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'date_of_birth' => 'date',
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -99,5 +100,11 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === 'User';
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        $oneWeekAgo = Carbon::now()->subWeek();
+        return $this->last_login_at && $this->last_login_at->gte($oneWeekAgo);
     }
 }

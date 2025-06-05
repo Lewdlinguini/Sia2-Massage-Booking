@@ -8,27 +8,25 @@
         <h1 class="fw-bold" style="color:#b97f5a; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
             Manage Users
         </h1>
-        <a href="{{ route('admin.users.create') }}" 
-           class="btn btn-lg fw-semibold text-white shadow"
-           style="
-                background: linear-gradient(90deg, #caa974, #d4a373);
-                border-radius: 50px;
-                box-shadow: 0 6px 15px rgba(212,163,115,.4);
-                transition: all .3s ease;
-            "
-            onmouseover="this.style.background='linear-gradient(90deg,#d4a373,#caa974)'"
-            onmouseout="this.style.background='linear-gradient(90deg,#caa974,#d4a373)'"
-        >
-            <i class="bi bi-plus-circle me-2"></i> Add New User
-        </a>
     </div>
-
-    <!-- ── Success Message ─────────────────────────────────── -->
-    @if(session('success'))
-        <div class="alert alert-success modern-alert" role="alert">
+    
+    <!-- Success Modal (hidden by default) -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="successModalLabel">Success</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
             {{ session('success') }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+          </div>
         </div>
-    @endif
+      </div>
+    </div>
 
     <!-- ── Users Table ────────────────────────────────────── -->
     <div class="card modern-card shadow-sm">
@@ -62,15 +60,15 @@
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
 
-                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                                  onsubmit="return confirm('Are you sure you want to delete this user?');"
-                                  class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger d-flex align-items-center gap-1 modern-btn" type="submit">
-                                    <i class="bi bi-trash-fill"></i> Delete
-                                </button>
-                            </form>
+                            <!-- Delete button triggers modal -->
+                            <button 
+                                class="btn btn-sm btn-danger d-flex align-items-center gap-1 modern-btn" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#confirmDeleteModal" 
+                                data-user-id="{{ $user->id }}" 
+                                data-user-name="{{ $user->first_name }} {{ $user->last_name }}">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </button>
                         </td>
                     </tr>
                     @empty
@@ -89,6 +87,30 @@
     </div>
 
 </div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form id="deleteUserForm" method="POST" action="">
+      @csrf
+      @method('DELETE')
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmDeleteLabel">Confirm Delete</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete <strong id="userName"></strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 @endsection
 
 @push('styles')
@@ -131,4 +153,29 @@
         outline: none;
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Show success modal if session success exists
+        @if(session('success'))
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        @endif
+
+        // Setup delete modal
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var userId = button.getAttribute('data-user-id');
+            var userName = button.getAttribute('data-user-name');
+            var form = document.getElementById('deleteUserForm');
+            var userNameElem = document.getElementById('userName');
+
+            userNameElem.textContent = userName;
+            form.action = '/admin/users/' + userId;  // Adjust URL if needed
+        });
+    });
+</script>
 @endpush

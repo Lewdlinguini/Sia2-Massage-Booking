@@ -24,6 +24,14 @@
         </div>
 
         <div class="mb-4 modern-input-group">
+             <label for="date_of_birth" class="form-label fw-semibold" style="color:#4a3b2b;">Date of Birth</label>
+             <input type="date" id="date_of_birth" name="date_of_birth" class="form-control modern-input" value="{{ old('date_of_birth', isset($user) ? $user->date_of_birth->format('Y-m-d') : '') }}" required>
+             @error('date_of_birth')
+        <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-4 modern-input-group">
             <label for="email" class="form-label fw-semibold" style="color:#4a3b2b;">Email (cannot change)</label>
             <input type="email" id="email" name="email" class="form-control modern-input" value="{{ $user->email }}" disabled>
         </div>
@@ -35,11 +43,6 @@
                 <option value="admin" {{ old('role', $user->role)=='admin' ? 'selected' : '' }}>Admin</option>
                 <option value="masseuse" {{ old('role', $user->role)=='masseuse' ? 'selected' : '' }}>Masseuse</option>
             </select>
-        </div>
-
-        <div class="mb-4 form-check modern-check">
-            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="1" {{ $user->is_active ? 'checked' : '' }}>
-            <label for="is_active" class="form-check-label fw-semibold" style="color:#4a3b2b;">Active</label>
         </div>
 
         <hr class="my-4" style="border-color: #d1b58e;">

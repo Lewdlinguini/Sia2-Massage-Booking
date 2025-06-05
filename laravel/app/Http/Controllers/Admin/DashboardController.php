@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
 use App\Models\User;
+use App\Models\Booking;
 
 class DashboardController extends Controller
 {

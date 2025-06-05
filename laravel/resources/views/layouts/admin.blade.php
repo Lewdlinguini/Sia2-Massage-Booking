@@ -237,7 +237,6 @@
 </main>
 
 <footer class="footer">
-    &copy; 2025 JanJan's Essential Oil Admin Panel
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
