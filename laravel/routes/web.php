@@ -14,6 +14,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\EmailCodeVerificationController;
+use App\Http\Controllers\Auth\TwoFactorLoginController;
 
 // Redirect root URL to login
 Route::get('/', fn () => redirect('/login'));
@@ -27,6 +28,9 @@ Route::post('/contact', [ContactController::class, 'submit'])->name('contact.sub
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+
+    Route::get('/2fa', [TwoFactorLoginController::class, 'show2faForm'])->name('2fa.form');
+    Route::post('/2fa', [TwoFactorLoginController::class, 'verify2faCode'])->name('2fa.verify');
 
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
@@ -74,7 +78,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     });
 
-    Route::view('/profile/security', 'profile.security')->name('profile.security');
+    Route::get('/profile/security', [SecurityController::class, 'show2faForm'])->name('profile.security');
     Route::put('/profile/security/password', [SecurityController::class, 'updatePassword'])->name('profile.password.update');
 
     Route::resource('services', ServiceController::class)->except(['show']);
@@ -95,6 +99,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware('check.role:Admin,Masseuse')->group(function () {
         Route::get('/masseuse-bookings', [BookingController::class, 'masseuseBookings'])->name('bookings.masseuse');
         Route::get('/services/bookings/{booking}/location', [BookingController::class, 'showLocation'])->name('services.location');
+    });
+
+    // 2FA enable/disable routes - only for authenticated and verified users
+    Route::middleware('verified')->group(function () {
+        Route::post('/profile/2fa/enable', [SecurityController::class, 'enable2FA'])->name('profile.2fa.enable');
+        Route::post('/profile/2fa/disable', [SecurityController::class, 'disable2FA'])->name('profile.2fa.disable');
     });
 
     Route::post('/notifications/mark-as-read', function () {
