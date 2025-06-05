@@ -13,13 +13,13 @@
         </p>
     </div>
 
-    <!-- ── Pie Chart Card ────────────────────────────────── -->
+    <!-- ── Bar Chart Card ────────────────────────────────── -->
     <div class="container d-flex justify-content-center">
-        <div class="card modern-card p-4" style="max-width: 350px; width: 100%;">
+        <div class="card modern-card p-4" style="max-width: 450px; width: 100%;">
             <h5 class="fw-semibold mb-4" style="color:#b97f5a; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
                 Active vs Inactive Users
             </h5>
-            <canvas id="userStatusChart" style="max-width: 300px; max-height: 300px; margin: 0 auto;"></canvas>
+            <canvas id="userStatusChart" style="max-height: 300px;"></canvas>
         </div>
     </div>
 
@@ -48,62 +48,61 @@
 
     const activeUsers = {{ $activeUsers }};
     const inactiveUsers = {{ $inactiveUsers }};
-    const totalUsers = activeUsers + inactiveUsers;
 
     const data = {
         labels: ['Active Users', 'Inactive Users'],
         datasets: [{
+            label: 'User Count',
             data: [activeUsers, inactiveUsers],
             backgroundColor: ['#caa974', '#8c7b6b'],
-            hoverOffset: 30
+            borderRadius: 10,
+            barThickness: 50
         }]
     };
 
     const config = {
-        type: 'pie',
+        type: 'bar',
         data: data,
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: '#4a3b2b',
-                        font: { weight: '600', size: 14 }
-                    }
+                    display: false
+                },
+                title: {
+                    display: false
                 },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed || 0;
-                            const percentage = totalUsers ? ((value / totalUsers) * 100).toFixed(1) : 0;
-                            return `${label}: ${value} (${percentage}%)`;
+                            return `${context.label}: ${context.parsed.y}`;
                         }
                     }
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: '#4a3b2b',
+                        font: { size: 14, weight: '600' }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Users',
+                        color: '#4a3b2b',
+                        font: { size: 16, weight: '600' }
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#4a3b2b',
+                        font: { size: 14, weight: '600' }
+                    }
+                }
             }
-        },
-        plugins: [{
-            id: 'percentageLabels',
-            afterDatasetsDraw(chart) {
-                const {ctx, data} = chart;
-                ctx.save();
-                ctx.font = 'bold 14px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
-                ctx.fillStyle = '#fff';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                chart.getDatasetMeta(0).data.forEach((arc, index) => {
-                    const value = data.datasets[0].data[index];
-                    const percentage = totalUsers ? ((value / totalUsers) * 100).toFixed(1) : 0;
-                    const position = arc.tooltipPosition();
-                    ctx.fillText(percentage + '%', position.x, position.y);
-                });
-
-                ctx.restore();
-            }
-        }]
+        }
     };
 
     new Chart(ctx, config);

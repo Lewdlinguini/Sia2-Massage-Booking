@@ -20,15 +20,16 @@ class HomeController extends Controller
             ]);
         }
 
-        // Fetch the highest-rated service with at least 1 rating and image
-        $featuredService = Service::withCount('bookings')
-            ->withAvg('ratings', 'stars')   // <-- changed here
-            ->whereHas('ratings') // must have at least one rating
+        // Fetch top 3 highest-rated services with at least one rating and an image
+        $featuredServices = Service::withCount('bookings')
+            ->withAvg('ratings', 'stars')
+            ->whereHas('ratings')
             ->whereNotNull('image')
-            ->orderByDesc('ratings_avg_stars') // <-- and here (withAvg creates this column)
-            ->orderByDesc('bookings_count')    // tie-breaker: most bookings
-            ->first();
+            ->orderByDesc('ratings_avg_stars')
+            ->orderByDesc('bookings_count')
+            ->take(3)
+            ->get();
 
-        return view('home', compact('featuredService'));
+        return view('home', compact('featuredServices'));
     }
 }
